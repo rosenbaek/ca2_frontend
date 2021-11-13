@@ -19,12 +19,17 @@ const Facade = () => {
 				console.log(JSON.stringify(res));
 				setToken(res.token);
 				//Sets user in localstorage for usage later
-				setUser(res.username,res.roles);
+				setUser(res.username, res.roles);
 			});
 	};
 
-	const setUser = (username,roles) => {
-		const user = {username,roles}
+	const getStations = () => {
+		const options = makeOptions("GET", true);
+		return fetch(URL + "/api/station", options).then(handleHttpErrors);
+	};
+
+	const setUser = (username, roles) => {
+		const user = { username, roles };
 		//makes the user object in json format, as you cant store objects in localStorage
 		localStorage.setItem("user", JSON.stringify(user));
 	};
@@ -77,6 +82,7 @@ const Facade = () => {
 		login,
 		logout,
 		fetchData,
+		getStations,
 	};
 };
 

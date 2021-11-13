@@ -1,7 +1,21 @@
-import { Table } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Table, Button } from "react-bootstrap";
+import loginFacade from "../facades/loginFacade";
 
 const Home = (props) => {
-	console.log(props);
+	const [stations, setStations] = useState([]);
+	const [searchValue, setSearchValue] = useState("");
+	const [watchList, setWatchList] = useState([]);
+
+	useEffect(() => {
+		loginFacade
+			.getStations()
+			.then((data) => console.log(setStations(data.stations)));
+	}, []);
+	useEffect(() => {
+		console.log(watchList);
+	}, [watchList]);
+
 	return (
 		<>
 			<h2 className="header">Home</h2>
@@ -27,6 +41,70 @@ const Home = (props) => {
 							))}
 						</tbody>
 					</Table>
+
+					<input
+						type="search"
+						placeholder="search"
+						value={searchValue}
+						onChange={(event) => {
+							setSearchValue(event.target.value);
+						}}
+					/>
+
+					<Table
+						striped
+						bordered
+						hover
+						style={{ width: "30%", marginLeft: "auto", marginRight: "auto" }}
+					>
+						<tbody>
+							{stations.map((station) => {
+								if (
+									station.station_name
+										.toLowerCase()
+										.includes(searchValue.toLowerCase()) &&
+									searchValue != ""
+								) {
+									return (
+										<tr
+											onClick={() => {
+												setWatchList((watchList) => [...watchList, station]);
+												setSearchValue("");
+											}}
+											key={station.station_id}
+										>
+											<td>{station.station_name}</td>
+										</tr>
+									);
+								} else {
+									return null;
+								}
+							})}
+						</tbody>
+					</Table>
+					<div>
+						{watchList.map((station) => {
+							return (
+								<div
+									style={{
+										display: "inline-flex",
+										alignItems: "baseline",
+										justifyContent: "space-between",
+										width: "300px",
+									}}
+								>
+									<p>{station.station_name}</p>
+									<Button
+										onClick={() =>
+											setWatchList(watchList.filter((s) => s !== station))
+										}
+									>
+										Remove
+									</Button>
+								</div>
+							);
+						})}
+					</div>
 				</div>
 			)}
 		</>
