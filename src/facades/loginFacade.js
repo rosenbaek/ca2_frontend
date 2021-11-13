@@ -1,4 +1,4 @@
-import { URL } from "../constants.js";
+import { URL, URL_METRO } from "../constants.js";
 
 function handleHttpErrors(res) {
 	if (!res.ok) {
@@ -51,16 +51,18 @@ const Facade = () => {
 		localStorage.removeItem("user");
 	};
 
-	const fetchData = () => {
-		const options = makeOptions("GET", true); //True add's the token
-		return fetch(URL + "/api/jokes", options).then(handleHttpErrors);
+	const fetchData = (stationId) => {
+		const options = makeOptions("GET", false); //True add's the token
+		return fetch(
+			URL_METRO + stationId + "&useBus=False&useTrain=False",
+			options
+		).then(handleHttpErrors);
 	};
 
 	const makeOptions = (method, addToken, body) => {
 		var opts = {
 			method: method,
 			headers: {
-				"Content-type": "application/json",
 				Accept: "application/json",
 			},
 		};

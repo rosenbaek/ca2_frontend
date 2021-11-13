@@ -12,8 +12,26 @@ const Home = (props) => {
 			.getStations()
 			.then((data) => console.log(setStations(data.stations)));
 	}, []);
+
 	useEffect(() => {
 		console.log(watchList);
+		watchList.forEach((st) =>
+			loginFacade.fetchData(st.station_id).then((data) => {
+				console.log(JSON.stringify(data));
+				console.log(
+					st.station_name +
+						": " +
+						JSON.stringify(
+							data[0].departures.map((dep) => {
+								return dep.map(
+									(i) =>
+										i.Name + " mod " + i.Direction + ": " + i.Minutes + "min."
+								);
+							})
+						)
+				);
+			})
+		);
 	}, [watchList]);
 
 	return (
